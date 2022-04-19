@@ -18,35 +18,25 @@
             </form>
         </div>
         
-        {% if data_objects %}
-            <ul><li>File Name: {{ file_name }}</li></ul>
+        {% if list_of_data and table_columns %}           
+            <ul><li>File Name: {{ filename }}</li></ul>
             <hr / >
             
             <h2>TABLE</h2>
             <table class="table table-striped table-hover">
                 <thead>
                     <tr>
-                        <th>Property Name</th>
-                        <th>Price</th>
-                        <th>Rent</th>
-                        <th>EMI</th>
-                        <th>Tax</th>
-                        <th>Other Exp.</th>
-                        <th>Net Expences</th>
-                        <th>Net Income</th>
+                        {% for columns in table_columns%}
+                            <th>{{ columns }}</th>
+                        {% endfor %}
                     </tr>
                 </thead>
                 <tbody>
-                    {% for data in data_objects %}
+                    {% for data in list_of_data %}
                         <tr>
-                            <td>{{ data.name }}</td>
-                            <td>{{ data.price }}</td>
-                            <td>{{ data.rent }}</td>
-                            <td>{{ data.emi }}</td>
-                            <td>{{ data.tax }}</td>
-                            <td>{{ data.exp }}</td>
-                            <td>{{ data.monthly_expenses }}</td>
-                            <td>{{ data.monthly_income}}</td>
+                            {% for key, value in data.items %}
+                                <td>{{ value }}</td>
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                 </tbody>

@@ -45,39 +45,55 @@ def delete_previous_data():
     data.delete()
     return data
 
-def read_file(all_data, filename):
-    df = pd.read_csv(all_data)
-    converted_to_json = df.reset_index().to_json(orient='records')
+# def read_file(all_data, filename):
+#     df = pd.read_csv(all_data)
+#     converted_to_json = df.reset_index().to_json(orient='records')
     
-    data = []
+#     data = []
     
-    data = json.loads(converted_to_json)
-    for d in data:
-        name = d["property_name"]
-        price = d["property_price"]
-        rent = d["property_rent"]
-        emi = d["emi"]
-        tax = d["tax"]
-        exp = d["other_exp"]
-        monthly_expenses = emi + tax + exp
-        monthly_income = rent - monthly_expenses
+#     data = json.loads(converted_to_json)
+#     for d in data:
+#         name = d["property_name"]
+#         price = d["property_price"]
+#         rent = d["property_rent"]
+#         emi = d["emi"]
+#         tax = d["tax"]
+#         exp = d["other_exp"]
+#         monthly_expenses = emi + tax + exp
+#         monthly_income = rent - monthly_expenses
         
-        dt = Data(name=name, price=price, rent=rent, emi=emi, tax=tax, exp=exp,
-                monthly_expenses=monthly_expenses, monthly_income=monthly_income)
-        dt.save()
+#         dt = Data(name=name, price=price, rent=rent, emi=emi, tax=tax, exp=exp,
+#                 monthly_expenses=monthly_expenses, monthly_income=monthly_income)
+#         dt.save()
         
-    file_name = filename[0]
+#     file_name = filename[0]
     
-    data_objects = Data.objects.all()
-    context = {"data_objects": data_objects,
-            "file_name":file_name}
+#     data_objects = Data.objects.all()
+#     context = {"data_objects": data_objects,
+#             "file_name":file_name}
+#     return context
+
+def read_csv_file(filename):
+    list_of_data = []
+    with open(f'{filename[0]}', 'r') as csv_file:
+        read_csv = csv.DictReader(csv_file)  
+        for row in read_csv:
+            list_of_data.append(dict(row))
+    table_columns = list(list_of_data[0].keys())
+    context = {
+        "filename": filename[0],
+        "table_columns":table_columns,
+        "list_of_data":list_of_data
+    }
+    
     return context
-    
+
+
 
 def csv_file_accept(request):
     if (request.method == "POST"):
         if request.FILES and request.FILES["file"]:
-            uploaded_file = request.FILES["file"]
+            uploaded_file = request.FILES["file"]          # used for static csv file.
             
             # To know the filename
             name_of_file = []
@@ -87,8 +103,10 @@ def csv_file_accept(request):
             # delete the previous data.    
             delete_previous_data()
             
-            context = read_file(uploaded_file, name_of_file)
+            context = read_csv_file(name_of_file)     # for static file read use:  context = read_csv_file(uploaded_file, name_of_file)
+
             return render(request, "myapp/index.html", context)
+        
         return render(request, "myapp/index.html")             
     else:
         print("This is GET request.")        
