@@ -1,0 +1,44 @@
+{% extends "myapp/base.html" %}
+
+{% block title %}Table{% endblock %}
+
+{% block content %}
+    
+    <div class="card alert alert-primary">
+    <div class="card-body">
+    <h1 >Analyze Your CSV</h1>
+    <h6>Upload your file to get started</h6>
+    </div>
+    </div>
+
+    <form>
+    <div class="mb-3 alert alert-secondary">
+    <label for="formFile" class="form-label">Upload Your CSV</label>
+    <input required class="form-control" type="file" id="formFile">
+    <hr />
+    <button type="submit" class="btn btn-primary">Submit</button>
+    </div>
+    </form>
+
+    
+    <hr />
+    <h2>HTML TABLE</h2>
+    <table bordered class="table">
+        <tr>
+        {% for header in table_headers %}
+            <th>{{ header }}</th>
+        {% endfor %}
+        </tr>
+        {% for item in property_data %}
+            <tr>
+                <td>{{ item.property_name }}</td>
+                <td>{{ item.property_price }}</td>
+                <td>{{ item.property_rent}}</td>
+                <td>{{ item.emi }}</td>
+                <td>{{ item.tax }}</td>
+                <td>{{ item.other_exp }}</td>
+            </tr>
+        {%endfor %}
+        
+    </table>
+{% endblock %}
